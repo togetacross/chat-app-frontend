@@ -1,24 +1,37 @@
-import logo from './logo.svg';
+import { Route, Routes } from 'react-router-dom';
+import NotFoundPage from './pages/error/not-found.page';
+import UnauthorizedPage from './pages/error/unauthorized.page';
+import RegistrationPage from './pages/authorization/registration';
+import LoginPage from './pages/authorization/login';
+import { AuthGuard } from './guards/auth.guard';
+import { Role } from './models/role';
 import './App.css';
+import Layout from './layout/Layout';
+import WebSocketProvider from './context/WebSocket';
+import { ProSidebarProvider } from 'react-pro-sidebar';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ProSidebarProvider>
+
+      <Routes>
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/registration' element={<RegistrationPage />} />
+
+        <Route path='/' element={
+          <AuthGuard roles={[Role.ADMIN, Role.USER]}>
+            <WebSocketProvider>
+              <Layout />
+            </WebSocketProvider>
+          </AuthGuard>
+        }
+        />
+
+        <Route path='/404' element={<NotFoundPage />} />
+        <Route path='/401' element={<UnauthorizedPage />} />
+        <Route path='*' element={<NotFoundPage />} />
+      </Routes >
+    </ProSidebarProvider>
   );
 }
 

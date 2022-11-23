@@ -1,0 +1,17 @@
+export const MESSAGE = 'MESSAGE';
+export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE';
+export const PAGINATE_MESSAGES = 'PAGINATE_MESSAGES';
+export const JOIN_ROOM = 'JOIN_ROOM';
+export const SET_CHAT_ROOMS = 'SET_CHAT_ROOMS';
+export const CONNECT = 'CONNECT';
+export const DISCONNECT = 'DISCONNECT';
+export const WS_SERVER_STATUS = 'WS_SERVER_STATUS';
+export const NEW_CONVERSATION = 'NEW_CONVERSATION';
+export const CONVERSATION_REMOVED = 'CONVERSATION_REMOVED';
+export const LEAVE = 'LEAVE';
+export const JOIN_USER = 'JOIN_USER';
+export const USER_TYPING = 'TYPE';
+export const SEEN = 'SEEN';
+export const LIKE = 'LIKE';
+export const ACCESS_DENIED = 'ACCESS_DENIED';
+export const NO_PERMISSION = 'NO_PERMISSION';
