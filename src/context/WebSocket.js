@@ -18,7 +18,7 @@ export default ({ children }) => {
 
     const clientRef = useRef(null);
     //const SOCKET_URL = "http://localhost:8080/ws-chat";
-    const SOCKET_URL = "http://172.17.0.4:3000/ws-chat";
+    const SOCKET_URL = "http://172.17.0.4:5000/ws-chat";
     const currentUser = store.getState().user;
     const { room, messages } = useSelector(state => state.chat);
     const dispatch = useDispatch()
