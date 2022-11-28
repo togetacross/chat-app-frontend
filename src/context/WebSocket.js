@@ -9,6 +9,7 @@ import { loadConversations } from './../services/chatroom.service';
 import { clearCurrentUser } from "../store/actions/user";
 import { history } from "../utils/history";
 import { useSelector } from 'react-redux';
+import { BASE_API_SOCKET_URL } from "../utils/constants";
 
 const WebSocketContext = createContext(null);
 
@@ -17,8 +18,6 @@ export { WebSocketContext }
 export default ({ children }) => {
 
     const clientRef = useRef(null);
-    //const SOCKET_URL = "http://localhost:8080/ws-chat";
-    const SOCKET_URL = "https://fruti2022.hu/ws-chat";
     const currentUser = store.getState().user;
     const { room, messages } = useSelector(state => state.chat);
     const dispatch = useDispatch()
@@ -50,7 +49,6 @@ export default ({ children }) => {
             hasLike = !selectedUserActivity.liked;
         }
 
-        console.log(hasLike);
         const payload = {
             roomId: room.id,
             userId: currentUser.id,
@@ -93,7 +91,6 @@ export default ({ children }) => {
     };
 
     const handleConnect = () => {
-        console.log("Connected!");
         if (currentUser?.token !== null) {
             setIsAuthenticated(true);
         } else {
@@ -116,14 +113,12 @@ export default ({ children }) => {
     }
 
     const handleDisconnect = () => {
-        console.log("Disconnected!");
         dispatch(setWsStatus(false));
     }
 
     return (
         <WebSocketContext.Provider
             value={{
-               // sendMessage: processNewMessage,
                 sendType: processType,
                 sendSeen: processSeen,
                 sendLike: processLike
@@ -132,7 +127,7 @@ export default ({ children }) => {
 
             <SockJsClient
                 options={{}}
-                url={SOCKET_URL}
+                url={BASE_API_SOCKET_URL}
                 headers={authHeader()}
                 topics={[
                     room && `/conversation/${room.id}`,

@@ -9,7 +9,8 @@ const CustomInput = ({
     name,
     label,
     typeAs,
-    style
+    style,
+    autoComplete
 }) => {
 
     return (
@@ -27,6 +28,7 @@ const CustomInput = ({
                     isInvalid={error}
                     onChange={onHandleInputChange}
                     style={style}
+                    autoComplete={autoComplete ? autoComplete : 'on'}
                 />
                 <Form.Control.Feedback type="invalid">
                     {error}

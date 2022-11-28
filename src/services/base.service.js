@@ -4,7 +4,6 @@ import { clearCurrentUser } from '../store/actions/user';
 import { BASE_API_URL } from '../utils/constants';
 import { history } from '../utils/history';
 
-
 export const axiosClient = axios.create({
     baseURL: BASE_API_URL,
     headers: {

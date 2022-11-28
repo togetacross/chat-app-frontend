@@ -1,30 +1,28 @@
 import React, { useRef, useState } from "react";
-import { Form, Button, Alert, Nav } from "react-bootstrap";
+import { Form, Button, Alert } from "react-bootstrap";
 import FormButton from '../UI/FormButton';
 import CustomInput from '../Forms/CustomInput';
 import ImageView from '../Forms/ImageView';
 import ImageInput from '../Forms/ImageInput';
 import useHttp from "../../hooks/useHttp";
-import { getUsersByNameContain, saveGroupConversation } from "../../services/chatroom.service";
+import { saveGroupConversation } from "../../services/chatroom.service";
 import CustomModal from "../Common/Modal/CustomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserGroup} from "@fortawesome/free-solid-svg-icons";
-import SearchInput from "../Forms/SearchInput";
+import { faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import SearchSelectedView from "../Forms/SearchSelectedView";
-import SearchDropdownList from './../Forms/SearchDropdownList';
+import { useEffect } from "react";
+import UserSearch from "./UserSearch";
 
 const NewChatRoom = () => {
     const fileInputRef = useRef(null);
     const [room, setRoom] = useState({ file: '', name: '' });
-    const { isLoading, error, data, sendRequest, requestIdentifier } = useHttp();
-    const [users, setUsers] = useState([]);
+    const { data, error, loading, sendRequest } = useHttp();
     const [selectedUsers, setSelectedUsers] = useState([]);
-
     const [show, setShow] = useState(false);
-    
+
     const handleClose = () => {
         setSelectedUsers([]);
-        setRoom([]);
+        setRoom({ file: '', name: '' });
         setShow(false);
     }
 
@@ -36,36 +34,34 @@ const NewChatRoom = () => {
         }
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const userIds = [];
         selectedUsers.map((user) =>
             userIds.push(user.id)
         );
-        const data = {
+        const roomData = {
             name: room.name,
             userIds: userIds,
         }
-        console.log(data);
         const multipart = new FormData();
         multipart.append('file', room.file);
-        multipart.append('room', new Blob([JSON.stringify(data)], {
+        multipart.append('room', new Blob([JSON.stringify(roomData)], {
             type: "application/json"
         }));
-        addChatRoom(multipart);
-        handleClose();
+
+        sendRequest(saveGroupConversation(multipart));
     }
 
-    const addChatRoom = async (room) => {
-        saveGroupConversation(room);
-    }
+    useEffect(() => {
+        if (data && !error) {
+            handleClose();
+        }
+    }, [data, error])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setRoom({
-            ...room,
-            [name]: value,
-        });
+        setRoom({ ...room, [name]: value, });
     }
 
     const handleUploadClick = () => {
@@ -74,16 +70,6 @@ const NewChatRoom = () => {
 
     const handleImageRemove = () => {
         setRoom(room => ({ ...room, file: "" }));
-    }
-
-    const handleUserNameChange = async (e) => {
-        const namePart = e.target.value;
-        if (namePart.length > 2) {
-            const { data } = await getUsersByNameContain(namePart);
-            setUsers(data);
-        } else {
-            setUsers([]);
-        }
     }
 
     const handleRemoveSelectedUser = (id) => {
@@ -96,7 +82,6 @@ const NewChatRoom = () => {
 
     const handleSelectUser = (user) => {
         setSelectedUsers(selectedUsers => [...selectedUsers, user]);
-        setUsers([]);
     }
 
     return (
@@ -107,8 +92,8 @@ const NewChatRoom = () => {
             >
                 <FontAwesomeIcon
                     className="px-2"
-                    icon={faUserGroup} 
-                    size="sm" 
+                    icon={faUserGroup}
+                    size="sm"
                 />
                 Group
             </div>
@@ -119,68 +104,63 @@ const NewChatRoom = () => {
                 handleOnHide={handleClose}
             >
 
-                <div className="d-flex align-items-center justify-content-center">
-                    <div className="w-75">
+                <div className="d-flex align-items-center justify-content-center p-2">
 
-                        <Form
-                            className="d-grid gap-3"
-                            onSubmit={handleSubmit}
+                    <Form
+                        className="d-grid gap-3 w-100"
+                        onSubmit={handleSubmit}
+                    >
+                        {
+                            error && !error.details && error.message && (
+                                <Alert variant="danger" className="text-center">{error.message}</Alert>
+                            )
+                        }
+
+                        <ImageInput
+                            onHandleImageChange={handleImageChange}
+                            onFileInputRef={fileInputRef}
+                        />
+
+                        <ImageView
+                            onHandleImageRemove={handleImageRemove}
+                            image={room.file}
+                        />
+
+                        <Button
+                            variant="outline-info"
+                            className="d-flex mx-auto rounded-pill"
+                            onClick={handleUploadClick}
                         >
-                            {
-                                error && !error.details && error.message && (
-                                    <Alert variant="danger" className="text-center">{error.message}</Alert>
-                                )
-                            }
+                            Select Image
+                        </Button>
 
-                            <ImageInput
-                                onHandleImageChange={handleImageChange}
-                                onFileInputRef={fileInputRef}
-                            />
+                        <CustomInput
+                            type='Text'
+                            typeAs='input'
+                            name='name'
+                            label='Name'
+                            value={room.name}
+                            error={error?.data?.details?.name}
+                            onHandleInputChange={handleInputChange}
+                        />
 
-                            <ImageView
-                                onHandleImageRemove={handleImageRemove}
-                                image={room.file}
-                            />
+                        <div className="d-flex position-relative">
+                            <UserSearch onHandleSelectUser={handleSelectUser}/>
+                        </div>
 
-                            <Button
-                                variant="outline-info"
-                                className="d-flex mx-auto rounded-pill"
-                                onClick={handleUploadClick}
-                            >
-                                Select Image
-                            </Button>
-
-                            <CustomInput
-                                type='Text'
-                                typeAs='input'
-                                name='name'
-                                label='Name'
-                                value={room.name}
-                                error={error && error.details && error.details.name}
-                                onHandleInputChange={handleInputChange}
-                            />
-
-                            <div className="d-flex position-relative">
-                                <SearchInput
-                                    onHandleChange={handleUserNameChange}
-                                />
-                                <SearchDropdownList
-                                    items={users}
-                                    onHandleSelect={handleSelectUser}
-                                />
-                            </div>
-
+                        <div className="pt-3">
                             <SearchSelectedView
                                 items={selectedUsers}
                                 onHandleRemove={handleRemoveSelectedUser}
                             />
+                        </div>
 
-                            <FormButton
-                                isLoading={isLoading}
-                                btnText='Create'
-                            />
-                        </Form>
-                    </div>
+
+                        <FormButton
+                            isLoading={loading}
+                            btnText='Create'
+                        />
+                    </Form>
                 </div>
             </CustomModal>
         </React.Fragment>
@@ -188,51 +168,3 @@ const NewChatRoom = () => {
 }
 
 export default NewChatRoom;
-
-/*
-<div className="d-flex position-relative">
-
-<Form.Control
-type="search"
-placeholder="Search User"
-aria-label="Search"
-onChange={handleUserNameChange}
-/>
-
-{users &&
-    <div className="mt-1 position-absolute top-100 start-0 w-100 bg-light rounded">
-    {users.map((user) =>
-        <div
-        key={user.id}
-        className="p-1"
-        onClick={() => handleSelectUser(user)}>
-        
-        <ProfileItem
-        name={user.name}
-        image={user.image}
-        />
-        </div>
-        )}
-        </div>
-    }
-    </div>
-
-    <Row>
-        {selectedUsers.length > 0 && selectedUsers.map((user) =>
-            <Col className="d-flex align-items-center mb-1" key={user.id}>
-                <ProfileItem
-                    name={user.name}
-                    image={user.image}
-                />
-                <Nav.Link
-                    className="text-secondary fw-bold text-danger"
-                    onClick={() => handleRemoveSelectedUser(user.id)}
-                >
-                    <FontAwesomeIcon
-                        className="px-2"
-                        icon={faXmark} size="lg" />
-                </Nav.Link>
-            </Col>
-        )}
-    </Row>
-    */

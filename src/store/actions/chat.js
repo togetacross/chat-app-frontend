@@ -50,8 +50,7 @@ export const setChatRooms = (rooms) => {
 }
 
 export const receiveMessage = (notification) => {
-    // console.log(notification.notificationType);
-    console.log(notification)
+    //console.log(notification)
     return {
         type: notification.notificationType,
         payload: notification

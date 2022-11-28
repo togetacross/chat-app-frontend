@@ -4,8 +4,11 @@ const CustomModal = (props) => {
 
     return (
         <Modal
+            size={props.size || ''}
             show={props.show}
             onHide={props.handleOnHide}
+           // centered
+            className='p-0'
         >
             <Modal.Header
                 closeButton

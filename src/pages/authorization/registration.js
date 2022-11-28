@@ -2,25 +2,31 @@ import { useEffect, useState } from "react";
 import User from "../../models/user";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import AuthenticationService from "../../services/authentication.service";
 import "./login.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { registration } from '../../services/authentication.service';
+import CustomInput from "../../components/Forms/CustomInput";
+import { Form } from "react-bootstrap";
+import FormButton from "../../components/UI/FormButton";
+import useHttp from "../../hooks/useHttp";
 
 const RegistrationPage = () => {
   const [user, setUser] = useState(new User('', '', ''));
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-
+  const { data, error, loading, sendRequest } = useHttp();
   const currentUser = useSelector(state => state.user);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (currentUser?.id) {
-      navigate('/home');
+      navigate('/');
     }
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+      navigate('/login');
+    }
+  }, [data])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,91 +40,58 @@ const RegistrationPage = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    if (!user.email || !user.password || !user.name) {
-      return;
-    }
-    setLoading(true);
-
-    AuthenticationService.registration(user).then(_ => {
-        navigate('/login');
-      }).catch((error) => {
-        console.log(error);
-        if (error?.response?.status === 409) {
-          setErrorMessage("Username or password is not valid.");
-        } else {
-          setErrorMessage("Unexpected error occurred.");
-        }
-        setLoading(false);
-      });
+    sendRequest(registration(user));
   };
 
   return (
     <div className="container-fluid bg-dark d-flex align-items-center justify-content-center vh-100">
-      <div className="card ms-auto me-auto p-3 shadow-lg custom-card">
-        <FontAwesomeIcon
-          icon={faUserCircle}
-          className="ms-auto me-auto user-icon"
-        />
-        {errorMessage && (
-          <div className="alert alert-danger text-center">{errorMessage}</div>
-        )}
-        <form
-          onSubmit={(e) => handleRegister(e)}
-          noValidate
-          className={submitted ? "was-validated" : ""}
+
+      <div className="card mx-auto p-3 custom-card">
+        <h1 className='text-white text-center'>Chat App</h1>
+        {error &&
+          <span className='text-warning text-center mb-2'>
+            {error?.status === 403 ? 'Access denied!' : error?.data?.message || 'Something went wrong!'}
+          </span>
+        }
+        <Form
+          onSubmit={handleRegister}
+          className='d-grid gap-3'
         >
-          <div className="form-group">
-            <label htmlFor="name">Full Name: </label>
-            <input 
-                type="text" 
-                name="name" 
-                className="form-control" 
-                placeholder="name"
-                value={user.name}
-                onChange={(e) => handleChange(e)}
-                required    
-            />
-            <div className="invalid-feedback">
-                Full name is required.
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Email: </label>
-            <input 
-                type="text" 
-                name="email" 
-                className="form-control" 
-                placeholder="email"
-                value={user.email}
-                onChange={(e) => handleChange(e)}
-                required    
-            />
-            <div className="invalid-feedback">
-                Username is required.
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password: </label>
-            <input 
-                type="password" 
-                name="password" 
-                className="form-control" 
-                placeholder="password"
-                value={user.password}
-                onChange={(e) => handleChange(e)}
-                required    
-            />
-            <div className="invalid-feedback">
-                Password is required.
-            </div>
-          </div>
-          <button className="btn btn-secondary w-100 mt-3" disabled={loading}>
-            Sign Up
-          </button>
-        </form>
-        <Link to="/login" className="btn btn-link" style={{color:'darkgray'}}>
-            I have an Account!
+          <CustomInput
+            type='Text'
+            typeAs='input'
+            name='name'
+            label='Name'
+            value={user.name}
+            onHandleInputChange={handleChange}
+            error={error?.data?.details?.name}
+          />
+          <CustomInput
+            type='email'
+            typeAs='input'
+            name='email'
+            label='Email'
+            value={user.email}
+            onHandleInputChange={handleChange}
+            error={error?.data?.details?.email}
+          />
+          <CustomInput
+            type='password'
+            typeAs='input'
+            name='password'
+            label='Password'
+            value={user.password}
+            autoComplete="off"
+            onHandleInputChange={handleChange}
+            error={error?.data?.details?.password}
+          />
+          <FormButton
+            isLoading={loading}
+            btnText='Sign Up'
+          />
+        </Form>
+        <Link to="/login" className="btn btn-link" style={{ color: 'darkgray' }}>
+          I have an Account!
         </Link>
       </div>
     </div>

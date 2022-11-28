@@ -1,23 +1,29 @@
 import { Button, Spinner } from "react-bootstrap";
 
-const FormButton = ({isLoading, btnText}) => {
+const FormButton = ({ isLoading, btnText, size }) => {
 
     return (
-        <div className="d-grid gap-2">
-            <Button variant="success" size="lg" type="submit" disabled={isLoading}>
-                {!isLoading ? btnText :
-                    <Spinner
-                        as="span"
-                        animation="border"
-                        size="sm"
-                        role="status"
-                        aria-hidden="true"
-                    >
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                }
-            </Button>
-        </div>
+        <Button
+            variant="success"
+            size={size}
+            type="submit"
+            disabled={isLoading}
+            style={{minWidth: 100}}
+        >
+            {!isLoading ? btnText :         
+                <Spinner
+                    as="span"
+                    animation="grow"
+                    size='sm'
+                    role="status"
+                    aria-hidden="true"
+                >
+                    <span className="visually-hidden">
+                        Loading...
+                    </span>
+                </Spinner>
+            }
+        </Button>
     );
 }
 

@@ -1,15 +1,10 @@
 import axios from 'axios';
 import { BASE_API_URL } from '../utils/constants';
 
-class AuthenticationService {
+export async function login(user) {
+    return await axios.post(BASE_API_URL + '/auth/sign-in', user);
+};
 
-    login(user) {
-        return axios.post(BASE_API_URL + '/auth/sign-in', user);
-    };
-
-    registration(user) {
-        return axios.post(BASE_API_URL + '/auth/sign-up', user);
-    };
-}
-
-export default new AuthenticationService();
+export async function registration(user) {
+    return await axios.post(BASE_API_URL + '/auth/sign-up', user);
+};

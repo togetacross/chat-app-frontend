@@ -2,13 +2,15 @@ import React, { useState, useRef, useContext } from 'react';
 import { WebSocketContext } from '../../context/WebSocket';
 import { useSelector } from 'react-redux';
 import EmojiPicker from 'emoji-picker-react';
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { sendMessage } from '../../services/chatroom.service';
 import ImageInput from '../Forms/ImageInput';
 import CustomModal from './../Common/Modal/CustomModal';
 import FilesView from '../Forms/FilesView';
-import { faImages, faFile, faFaceGrinWide } from '@fortawesome/free-solid-svg-icons';
+import { faImages, faFaceGrinWide } from '@fortawesome/free-solid-svg-icons';
+import FormButton from '../UI/FormButton';
+import useHttp from '../../hooks/useHttp';
 
 const NewMessage = () => {
     const [files, setFiles] = useState([]);
@@ -17,9 +19,9 @@ const NewMessage = () => {
     const [messageText, setMessageText] = useState('')
     const [showPicker, setShowPicker] = useState(false)
     const fileInputRef = useRef(null);
-
     const [isTyping, setIsTyping] = useState(false);
     const [timer, setTimer] = useState(null)
+    const { sendRequest, data, error, loading } = useHttp();
 
     const handleImageChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -35,17 +37,9 @@ const NewMessage = () => {
         }
     }
 
-    const handleFileRemove =(name) => {
-        setFiles(files.filter(file => file.name !== name));
-    }
-
+    const handleFileRemove = (name) => { setFiles(files.filter(file => file.name !== name));}
     const handlePickerClick = () => { setShowPicker(!showPicker); }
-
-    const handleEmojiClick = (emoji) => {
-        console.log(emoji)
-        setMessageText(messageText + emoji.emoji);
-    }
-
+    const handleEmojiClick = (emoji) => { setMessageText(messageText + emoji.emoji); }
     const handleUploadClick = () => { fileInputRef.current?.click(); }
 
     const onChangeMessage = (e) => {
@@ -62,15 +56,14 @@ const NewMessage = () => {
                 setIsTyping(false);
                 ws.sendType(false);
             }
-
+            
         }, 1000);
-
+        
         setTimer(newTimer);
     }
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const dateTime = new Date().toJSON();
 
         const newMessage = {
@@ -90,15 +83,7 @@ const NewMessage = () => {
             new Blob([JSON.stringify(newMessage)], { type: "application/json" })
         );
 
-        try {
-            const data = await sendMessage(multipart);
-            console.log('Request status ok with code: ' + data.status);
-        } catch (err) {
-            console.log(err);
-            console.log('Error code: ' + err?.response.status);
-            console.log(err?.response.data);
-        }
-
+        sendRequest(sendMessage(multipart));
         setMessageText('');
         setFiles([]);
         setIsTyping(false);
@@ -126,8 +111,8 @@ const NewMessage = () => {
 
             </CustomModal>
 
-            <FilesView 
-                files={files} 
+            <FilesView
+                files={files}
                 onHandleFileRemove={handleFileRemove}
             />
 
@@ -141,19 +126,24 @@ const NewMessage = () => {
                         value={messageText}
                         onChange={onChangeMessage}
                         rows={2}
-                        isInvalid={false}
+                        isInvalid={error}
                         placeholder={'Type your message'}
                     />
 
-                    <div className="d-flex justify-content-end align-items-center">
+                    <div className="d-flex justify-content-end align-items-center py-1">
                         <FontAwesomeIcon className="text-white px-2" icon={faFaceGrinWide} onClick={handlePickerClick} size="xl" />
-                        <FontAwesomeIcon className="text-white px-2" icon={faFile} size="xl" />
                         <FontAwesomeIcon className="text-white px-2" icon={faImages} size="xl" onClick={handleUploadClick} />
                         <ImageInput
                             onHandleImageChange={handleImageChange}
                             onFileInputRef={fileInputRef}
                         />
-                        <Button className="px-4 m-2 fw-bold" variant="success" type="submit">Send</Button>
+
+                        <FormButton
+                            isLoading={loading}
+                            btnText='Send'
+                            size='sm'
+                        />
+
                     </div>
                 </Form.Group>
             </Form>

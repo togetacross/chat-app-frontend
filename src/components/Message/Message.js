@@ -4,6 +4,8 @@ import { Card, Image } from 'react-bootstrap';
 import ProfileItem from '../Common/ProfileItem';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import MessageActivityDetails from './MessageActivityDetails';
+import ImageViewer from './ImageViewer';
 
 const Message = ({ item, isMyMessage, user, roomUsers, onSendLike, currentUserId }) => {
 
@@ -11,12 +13,24 @@ const Message = ({ item, isMyMessage, user, roomUsers, onSendLike, currentUserId
     const [likeActivities, setLikeActivities] = useState();
     const [hasSelfLike, setHasSelfLike] = useState();
     const [seenActivities, setSeenActivities] = useState();
+    const [showImageViewer, setShowImageViewer] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState();
 
     useEffect(() => {
         setHasSelfLike(item.userActivitys.filter(activity => activity.userId === currentUserId && activity.liked === true).length)
         setLikeActivities(item.userActivitys.filter(activity => activity.liked === true).length);
         setSeenActivities(item.userActivitys.filter(activity => activity.seenAt !== null).length);
     }, [item])
+
+    const handleShowImageViewer = (index) => {
+        setCurrentIndex(index);
+        setShowImageViewer(!showImageViewer);
+    }
+    
+    const handleCloseImageViewer = () => {
+        setCurrentIndex();
+        setShowImageViewer(!showImageViewer);
+    }
 
     return (
         <div
@@ -44,18 +58,29 @@ const Message = ({ item, isMyMessage, user, roomUsers, onSendLike, currentUserId
                 text={isMyMessage ? 'white' : 'dark'}
             >
                 <Card.Body >
-                    <Card.Title
-                        as='div'
-                    >
+                    <Card.Title as='div' className='d-flex justify-content-between'>
                         <ProfileItem
                             name={user.name}
                             image={user.image}
                             isOnline={user.online}
                         />
+                        <MessageActivityDetails
+                            users={roomUsers}
+                            activities={item.userActivitys}
+                        />
                     </Card.Title>
 
+                    {item.files &&
+                        <ImageViewer
+                            show={showImageViewer}
+                            onHandleClose={handleCloseImageViewer}
+                            images={item.files}
+                            selectedIndex={currentIndex}
+                        />
+                    }
+
                     <Card.Text className="" >
-                        {item.files && item.files.map((item) => (
+                        {item.files && item.files.map((item, index) => (
                             /// IF DOCUMENT, VIDEO DISPLAY FLEX
 
                             <div
@@ -63,19 +88,19 @@ const Message = ({ item, isMyMessage, user, roomUsers, onSendLike, currentUserId
                                 className={`${item.attachmentType === 'IMAGE' ? 'd-inline-flex' : 'd-flex'}`}
                             >
                                 {item.attachmentType === 'IMAGE' ?
-                                    <Image
-                                        src={`data:image/jpeg;base64,${item.file}`}
-                                        thumbnail
-                                        style={{ maxHeight: '60px' }}
-                                    />
+                                    <div onClick={() => handleShowImageViewer(index)}>
+                                        <Image
+                                            src={`data:image/jpeg;base64,${item.file}`}
+                                            thumbnail
+                                            style={{ maxHeight: '60px' }}
+                                        />
+                                    </div>
                                     :
                                     <div className='py-2' >
-                                        <p>
-                                            <FontAwesomeIcon icon={faFile} />
-                                            <span className='text-warning'>
-                                                {item.name}
-                                            </span>
-                                        </p>
+                                        <FontAwesomeIcon icon={faFile} />
+                                        <span className='text-warning'>
+                                            {item.name}
+                                        </span>
                                     </div>
                                 }
                             </div>

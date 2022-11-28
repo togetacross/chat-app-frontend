@@ -1,41 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { addUsersToChatroom, getUsersByNameContainAndNotInGroup } from '../../services/chatroom.service';
+import { addUsersToChatroom } from '../../services/chatroom.service';
+import UserSearch from '../Chatroom/UserSearch';
 import CustomModal from './../Common/Modal/CustomModal';
-import SearchInput from './../Forms/SearchInput';
-import SearchListView from './../Forms/SearchListView';
+import useHttp from '../../hooks/useHttp';
 
 const AddUser = ({ roomId }) => {
     const [show, setShow] = useState(false);
     const handleShow = () => setShow(!show);
-    const [error, setError] = useState();
-    const [usersFound, setUsersFound] = useState([]);
+    const { data, error, loading, sendRequest } = useHttp();
 
     const handleInvitation = (user) => {
         const data = {
             userId: user.id,
             chatRoomId: roomId
-        }
-        addUsersToChatroom(data);
-        setError();
-        setUsersFound([]);
+        };
+        sendRequest(addUsersToChatroom(data));
     };
 
-    const handleUserNameChange = async (e) => {
-        const namePart = e.target.value;
-        if (namePart.length > 2) {
-            try {
-                console.log(roomId);
-                const { data } = await getUsersByNameContainAndNotInGroup(namePart, roomId);
-                setUsersFound(data);
-            } catch (err) {
-                setError(err?.response?.data?.message);
-            }
-        } else {
-            setError();
-            setUsersFound([]);
+    useEffect(() => {
+        if (data && !error && !loading) {
+            handleShow();
         }
-    };
+    }, [data, error])
 
     return (
         <React.Fragment>
@@ -43,14 +30,14 @@ const AddUser = ({ roomId }) => {
             <CustomModal
                 show={show}
                 title={"Add to conversation"}
-                handleOnHide={handleShow}>
-                <SearchInput
-                    onHandleChange={handleUserNameChange}
-                />
-                <SearchListView
-                    items={usersFound}
-                    onHandleSelect={handleInvitation} 
-                    error={error}
+                handleOnHide={handleShow}
+            >
+                {error && (
+                    <p className="text-center m-0 text-danger">{error?.data?.message || 'Something went wrong!'}</p>
+                )}
+                <UserSearch
+                    onHandleSelectUser={handleInvitation}
+                    roomId={roomId}
                 />
             </CustomModal>
         </React.Fragment>

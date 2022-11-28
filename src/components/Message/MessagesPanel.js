@@ -99,8 +99,7 @@ const MessagesPanel = ({ currentUserId }) => {
         <div
             className="h-100 w-100 p-3"
             style={{ overflowY: "auto" }}
-            //ref={userClickRef}
-            >
+        >
 
             <div
                 className='mx-auto'
@@ -108,10 +107,10 @@ const MessagesPanel = ({ currentUserId }) => {
             >
                 {hasMore &&
                     <FontAwesomeIcon
-                    onClick={handleScrollUp}
-                    className='d-flex mx-auto mb-3 text-white'
-                    icon={faChevronUp}
-                    size="xl"
+                        onClick={handleScrollUp}
+                        className='d-flex mx-auto mb-3 text-white'
+                        icon={faChevronUp}
+                        size="xl"
                     />
                 }
 
