@@ -1,15 +1,27 @@
 import React, { useState, useRef } from 'react';
-import { Button, Form, Image, Dropdown } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import FormButton from '../UI/FormButton';
 import CustomModal from './../Common/Modal/CustomModal';
 import ImageView from './../Forms/ImageView';
 import { updateUserProfileImage } from "../../services/chatroom.service";
+import useHttp from '../../hooks/useHttp';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { useEffect } from 'react';
 
 const UpdateProfileImage = () => {
 
+    const { data, error, loading, sendRequest } = useHttp();
     const [image, setImage] = useState('');
     const fileInputRef = useRef(null);
     const [show, setShow] = useState(false);
+
+    useEffect(() => {
+        if (data && !error && !loading) {
+            handleShow();
+        }
+    }, [data, error, loading])
+
     const handleShow = () => {
         setShow(!show);
     }
@@ -27,22 +39,22 @@ const UpdateProfileImage = () => {
     const handleUpload = async () => {
         const multipart = new FormData();
         multipart.append('image', image);
-        try{
-            const data = await updateUserProfileImage(multipart);
-            console.log(data);
-        }catch(err) {
-            console.log(err);
-        }
-
+        sendRequest(updateUserProfileImage(multipart));
     }
 
     const handleImageRemove = () => {
+        fileInputRef.current.value = "";
         setImage('');
     }
 
     return (
         <React.Fragment>
-            <div className='text-secondary' onClick={handleShow}>Profile</div>
+            <div
+                className="text-secondary"
+                onClick={handleShow}
+            >
+                Profile
+            </div>
 
             <CustomModal
                 show={show}
@@ -60,22 +72,32 @@ const UpdateProfileImage = () => {
                     />
                 </Form.Group>
 
-                <div
-                    className='my-1'
-                    onClick={handleUploadClick}
-                >
-                    <ImageView
-                        onHandleImageRemove={handleImageRemove}
-                        image={image}
+                {!image &&
+                    <FontAwesomeIcon
+                        onClick={handleUploadClick}
+                        className='text-primary d-flex me-auto ms-auto my-3'
+                        icon={faUpload}
+                        size="xl"
                     />
-                </div>
+                }
 
+                <ImageView
+                    onHandleImageRemove={handleImageRemove}
+                    image={image}
+                />
+
+                {error &&
+                    <p className='text-danger text-center mx-auto'>
+                        {error?.data?.message || 'Something went wrong!'}
+                    </p>
+                }
                 <div
+                    className='d-grid p-1'
                     onClick={handleUpload}
                 >
                     <FormButton
-                        isLoading={false}
-                        btnText='Save'
+                        isLoading={loading}
+                        btnText='Update'
                     />
                 </div>
 

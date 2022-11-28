@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { faAngleLeft, faAngleRight, faDownload, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Col, Modal, Row, Image } from "react-bootstrap";
@@ -6,8 +6,6 @@ import { Col, Modal, Row, Image } from "react-bootstrap";
 const ImageViewer = ({ show, onHandleClose, images, selectedIndex }) => {
 
     const [index, setIndex] = useState();
-    //const [downloadUrl, setDownloadUrl] = useState();
-    // const [downloadRef, setDownloadRef] = useRef();
 
     useEffect(() => {
         setIndex(selectedIndex);
@@ -28,33 +26,34 @@ const ImageViewer = ({ show, onHandleClose, images, selectedIndex }) => {
     }
 
     const downloadFile = () => {
-
+        // fetch file by name from server...
     }
-
-    const downloadImage = (item) => {
-        let blob = new Blob([item.file]);
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = item.name;
-        document.body.appendChild(link);
-
-        link.dispatchEvent(
-            new MouseEvent('click', {
-                bubbles: true,
-                cancelable: true,
-                view: window
-            })
-        );
-
-        document.body.removeChild(link);
-    }
+    /*
+        const downloadImage = (item) => {
+            let blob = new Blob([item.file]);
+            const blobUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = item.name;
+            document.body.appendChild(link);
+    
+            link.dispatchEvent(
+                new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                })
+            );
+    
+            document.body.removeChild(link);
+        }*/
 
     return (
 
         <Modal
             show={show}
             onHide={handleClose}
+            className='p-0'
             fullscreen
         >
             <div className="position-relative bg-dark">
@@ -99,7 +98,7 @@ const ImageViewer = ({ show, onHandleClose, images, selectedIndex }) => {
                     <div className="d-flex vh-100">
                         <div className="d-flex flex-column m-auto">
 
-                            <div className="text-center fs-5 mb-3 text-light user-select-none">
+                            <div className="text-center fs-6 mb-3 text-light user-select-none">
                                 {images[index]?.name || 'N/A'}
                             </div>
 
@@ -109,7 +108,7 @@ const ImageViewer = ({ show, onHandleClose, images, selectedIndex }) => {
                                     <Image
                                         src={`data:image/jpeg;base64,${images[index]?.file}`}
                                         className="img-fluid rounded m-auto user-select-none"
-                                        style={{ maxHeight: '90vh' }}
+                                        style={{ maxHeight: '80vh' }}
                                     />
 
                                     :
@@ -124,11 +123,13 @@ const ImageViewer = ({ show, onHandleClose, images, selectedIndex }) => {
                                 }
 
                             </div>
-                            <div className="text-light ps-3 mt-3 border-start">
-                                <span className="ms-2">
-                                    {images[index]?.description || 'No description'}
-                                </span>
-                            </div>
+                            {images[index]?.description &&
+                                <div className="text-light ps-3 mt-3 border-start">
+                                    <span className="ms-2">
+                                        {images[index]?.description}
+                                    </span>
+                                </div>
+                            }
 
                         </div>
                     </div>

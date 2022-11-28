@@ -44,7 +44,7 @@ const Message = ({ item, isMyMessage, user, roomUsers, onSendLike, currentUserId
                     onClick={() => onSendLike(item.id)}
                 />
                 <p
-                    className={`${likeActivities && 'text-danger'}`}
+                    className={`${likeActivities ? 'text-danger' : 'text-white'}`}
                 >
                     {likeActivities}
                 </p>
@@ -58,7 +58,7 @@ const Message = ({ item, isMyMessage, user, roomUsers, onSendLike, currentUserId
                 text={isMyMessage ? 'white' : 'dark'}
             >
                 <Card.Body >
-                    <Card.Title as='div' className='d-flex justify-content-between'>
+                    <Card.Title className='d-flex justify-content-between fs-6'>
                         <ProfileItem
                             name={user.name}
                             image={user.image}
@@ -79,22 +79,21 @@ const Message = ({ item, isMyMessage, user, roomUsers, onSendLike, currentUserId
                         />
                     }
 
-                    <Card.Text className="" >
+                    <Card.Text>
                         {item.files && item.files.map((item, index) => (
                             /// IF DOCUMENT, VIDEO DISPLAY FLEX
 
                             <div
                                 key={item.name}
-                                className={`${item.attachmentType === 'IMAGE' ? 'd-inline-flex' : 'd-flex'}`}
+                                className={`${item.attachmentType === 'IMAGE' ? 'd-inline-flex me-1' : 'd-flex'}`}
                             >
                                 {item.attachmentType === 'IMAGE' ?
-                                    <div onClick={() => handleShowImageViewer(index)}>
                                         <Image
                                             src={`data:image/jpeg;base64,${item.file}`}
                                             thumbnail
                                             style={{ maxHeight: '60px' }}
+                                            onClick={() => handleShowImageViewer(index)}
                                         />
-                                    </div>
                                     :
                                     <div className='py-2' >
                                         <FontAwesomeIcon icon={faFile} />

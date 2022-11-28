@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Alert } from "react-bootstrap";
 import FormButton from '../UI/FormButton';
 import CustomInput from '../Forms/CustomInput';
 import ImageView from '../Forms/ImageView';
@@ -8,7 +8,7 @@ import useHttp from "../../hooks/useHttp";
 import { saveGroupConversation } from "../../services/chatroom.service";
 import CustomModal from "../Common/Modal/CustomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import SearchSelectedView from "../Forms/SearchSelectedView";
 import { useEffect } from "react";
 import UserSearch from "./UserSearch";
@@ -70,6 +70,7 @@ const NewChatRoom = () => {
 
     const handleImageRemove = () => {
         setRoom(room => ({ ...room, file: "" }));
+        fileInputRef.current.value = '';
     }
 
     const handleRemoveSelectedUser = (id) => {
@@ -120,19 +121,21 @@ const NewChatRoom = () => {
                             onHandleImageChange={handleImageChange}
                             onFileInputRef={fileInputRef}
                         />
+                        {room.file &&
+                            <ImageView
+                                onHandleImageRemove={handleImageRemove}
+                                image={room.file}
+                            />
+                        }
 
-                        <ImageView
-                            onHandleImageRemove={handleImageRemove}
-                            image={room.file}
-                        />
-
-                        <Button
-                            variant="outline-info"
-                            className="d-flex mx-auto rounded-pill"
-                            onClick={handleUploadClick}
-                        >
-                            Select Image
-                        </Button>
+                        {!room.file &&
+                            <FontAwesomeIcon
+                                onClick={handleUploadClick}
+                                className='text-primary d-flex me-auto ms-auto my-3'
+                                icon={faPlus}
+                                size="xl"
+                            />
+                        }
 
                         <CustomInput
                             type='Text'
@@ -145,7 +148,7 @@ const NewChatRoom = () => {
                         />
 
                         <div className="d-flex position-relative">
-                            <UserSearch onHandleSelectUser={handleSelectUser}/>
+                            <UserSearch onHandleSelectUser={handleSelectUser} />
                         </div>
 
                         <div className="pt-3">
@@ -160,6 +163,7 @@ const NewChatRoom = () => {
                             isLoading={loading}
                             btnText='Create'
                         />
+                        
                     </Form>
                 </div>
             </CustomModal>

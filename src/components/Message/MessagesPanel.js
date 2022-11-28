@@ -1,13 +1,11 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState, useContext, useLayoutEffect } from 'react';
 import Message from './Message';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux';
-import { useState, useContext } from 'react';
 import ActivityMessage from './ActivityMessage';
 import { paginateMessages } from '../../services/chatroom.service';
 import { WebSocketContext } from '../../context/WebSocket';
-import { useLayoutEffect } from 'react';
 
 const MessagesPanel = ({ currentUserId }) => {
 
@@ -22,7 +20,6 @@ const MessagesPanel = ({ currentUserId }) => {
             setFirstMessage(messages[0]);
             // need fix seen request
             ws.sendSeen();
-            console.log(messages)
         }
     }, [messages])
 
@@ -39,9 +36,7 @@ const MessagesPanel = ({ currentUserId }) => {
         /*const { height, bottom, top } = element.getBoundingClientRect();
         console.log(element.getBoundingClientRect());
         console.log(element.lastChild.scrollHeight);*/
-
         scrollRef.current?.scrollIntoView({ block: 'end', inline: "nearest", behavior: "smooth", alignToTop: false })
-
     }
 
     const handleScrollUp = () => {

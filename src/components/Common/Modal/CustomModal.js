@@ -12,9 +12,9 @@ const CustomModal = (props) => {
         >
             <Modal.Header
                 closeButton
-                className='px-3 py-1'
+                className='px-3 py-1 fs-5'
             >
-                <Modal.Title>
+                <Modal.Title className="fs-6">
                     {props.title}
                 </Modal.Title>
             </Modal.Header>

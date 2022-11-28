@@ -32,7 +32,10 @@ const SideBar = () => {
                 />
             </Nav.Link>
 
-            <Menu className='text-white'>
+            <Menu
+                className='text-white'
+            >
+
                 <div className='text-center mt-1'>
                     <FontAwesomeIcon
                         className={connected ? 'text-success' : 'text-danger'}

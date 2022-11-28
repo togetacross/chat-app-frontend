@@ -3,12 +3,16 @@ import { ListGroup } from "react-bootstrap";
 import ChatRoomItem from "./ChatRoomItem";
 import { useDispatch } from 'react-redux';
 import { joinRoom } from './../../services/chatroom.service';
+import { useProSidebar } from 'react-pro-sidebar';
 
 const ChatRoomsPanel = ({ conversations }) => {
     const dispatch = useDispatch();
 
+    const { toggleSidebar } = useProSidebar();
+
     const handleRoomSelect = (roomId) => {
         dispatch(joinRoom(roomId));
+        toggleSidebar();
     }
 
     return (

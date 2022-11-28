@@ -1,9 +1,9 @@
 import { Form } from "react-bootstrap";
 
-const ImageInput = ({onFileInputRef, onHandleImageChange }) => {
+const ImageInput = ({ onFileInputRef, onHandleImageChange }) => {
 
     return (
-        <Form.Group className="mb-3">
+        <Form.Group>
             <Form.Control
                 className="d-none"
                 ref={onFileInputRef}

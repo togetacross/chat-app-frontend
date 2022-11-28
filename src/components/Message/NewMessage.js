@@ -37,6 +37,7 @@ const NewMessage = () => {
         }
     }
 
+    // need ref fix after remove file
     const handleFileRemove = (name) => { setFiles(files.filter(file => file.name !== name));}
     const handlePickerClick = () => { setShowPicker(!showPicker); }
     const handleEmojiClick = (emoji) => { setMessageText(messageText + emoji.emoji); }
