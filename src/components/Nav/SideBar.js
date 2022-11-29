@@ -6,9 +6,12 @@ import { Menu, MenuItem, Sidebar, SubMenu, useProSidebar } from 'react-pro-sideb
 import NewPrivateRoom from './../Chatroom/NewPrivateRoom';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAnglesLeft, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faAnglesLeft, faCircle, faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { Nav } from 'react-bootstrap';
+import './SideBar.css'
 import UpdateProfileImage from '../User/UpdateProfileImage';
+import { faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import SignOut from '../User/SignOut';
 
 const SideBar = () => {
 
@@ -23,6 +26,7 @@ const SideBar = () => {
             backgroundColor='rgb(48, 60, 66)'
         >
 
+
             <Nav.Link className='text-end p-1 d-md-none'>
                 <FontAwesomeIcon
                     onClick={() => toggleSidebar()}
@@ -32,9 +36,7 @@ const SideBar = () => {
                 />
             </Nav.Link>
 
-            <Menu
-                className='text-white'
-            >
+            <Menu>
 
                 <div className='text-center mt-1'>
                     <FontAwesomeIcon
@@ -42,28 +44,18 @@ const SideBar = () => {
                         icon={faCircle}
                         size="lg"
                     />
-                    <span className='ms-2 small'>
+                    <span className='ms-2 small text-white'>
                         {connected ? 'Connected' : 'Disconnected'}
                     </span>
                 </div>
-                <SubMenu
-                    prefix={<ProfileItem name={name} image={image} />}
-                >
-                    <MenuItem >
-                        <UpdateProfileImage />
-                    </MenuItem>
-                    <MenuItem>
-                        <span className='text-secondary'>Sign Out</span>
-                    </MenuItem>
+                <SubMenu prefix={<ProfileItem name={name} image={image} />}>
+                    <UpdateProfileImage />
+                    <SignOut/>
                 </SubMenu>
 
                 <SubMenu label="Conversation">
-                    <MenuItem>
-                        <NewChatRoom />
-                    </MenuItem>
-                    <MenuItem>
-                        <NewPrivateRoom />
-                    </MenuItem>
+                    <NewChatRoom />
+                    <NewPrivateRoom />
                 </SubMenu>
                 <ChatRoomsPanel conversations={chatRooms} />
             </Menu>

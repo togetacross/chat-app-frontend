@@ -1,0 +1,13 @@
+.ps-menu-button {
+  color: rgb(255, 255, 255) !important;
+  background-color: rgb(48, 60, 66);
+}
+
+.ps-menu-button:hover {
+  background-color: rgb(48, 60, 66) !important;
+  color: rgb(251, 222, 74) !important;
+}
+
+.ps-menu-icon {
+  color: rgb(250, 241, 198) !important;
+}

@@ -12,6 +12,7 @@ import { faPlus, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import SearchSelectedView from "../Forms/SearchSelectedView";
 import { useEffect } from "react";
 import UserSearch from "./UserSearch";
+import { MenuItem } from 'react-pro-sidebar';
 
 const NewChatRoom = () => {
     const fileInputRef = useRef(null);
@@ -87,17 +88,19 @@ const NewChatRoom = () => {
 
     return (
         <React.Fragment>
-            <div
-                className="text-secondary"
+
+
+            <MenuItem
+                icon={
+                    <FontAwesomeIcon
+                        icon={faUserGroup}
+                        size="sm"
+                    />
+                }
                 onClick={handleShow}
             >
-                <FontAwesomeIcon
-                    className="px-2"
-                    icon={faUserGroup}
-                    size="sm"
-                />
                 Group
-            </div>
+            </MenuItem>
 
             <CustomModal
                 show={show}
@@ -163,7 +166,7 @@ const NewChatRoom = () => {
                             isLoading={loading}
                             btnText='Create'
                         />
-                        
+
                     </Form>
                 </div>
             </CustomModal>

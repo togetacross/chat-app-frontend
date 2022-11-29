@@ -6,8 +6,9 @@ import ImageView from './../Forms/ImageView';
 import { updateUserProfileImage } from "../../services/chatroom.service";
 import useHttp from '../../hooks/useHttp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faGear, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
+import { MenuItem } from 'react-pro-sidebar';
 
 const UpdateProfileImage = () => {
 
@@ -49,12 +50,18 @@ const UpdateProfileImage = () => {
 
     return (
         <React.Fragment>
-            <div
-                className="text-secondary"
+        
+            <MenuItem
+                icon={
+                    <FontAwesomeIcon
+                        icon={faGear}
+                        size="lg"
+                    />
+                }
                 onClick={handleShow}
             >
                 Profile
-            </div>
+            </MenuItem>
 
             <CustomModal
                 show={show}

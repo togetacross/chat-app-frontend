@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import CustomModal from './../Common/Modal/CustomModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { savePrivateConversation } from "../../services/chatroom.service";
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import useHttp from "../../hooks/useHttp";
 import { useEffect } from "react";
 import UserSearch from "./UserSearch";
+import { MenuItem } from 'react-pro-sidebar';
 
 const NewPrivateRoom = () => {
 
@@ -32,7 +33,7 @@ const NewPrivateRoom = () => {
 
             <CustomModal
                 show={show}
-                title={"Search User"}
+                title={"Create private conversation"}
                 handleOnHide={handleClose}>
                 {error && !loading &&
                     <p className="text-center text-danger m-0">
@@ -44,17 +45,18 @@ const NewPrivateRoom = () => {
                 </div>
             </CustomModal>
 
-            <div
-                className='text-secondary'
+
+            <MenuItem
+                icon={
+                    <FontAwesomeIcon
+                        icon={faUser}
+                        size="lg"
+                    />
+                }
                 onClick={handleShow}
             >
-                <FontAwesomeIcon
-                    className="px-2"
-                    icon={faSearch}
-                    size="lg"
-                />
-                User
-            </div>
+                Private
+            </MenuItem>
 
         </React.Fragment>
     )
