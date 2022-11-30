@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from '../../store/actions/user';
 import User from "../../models/user";
 import { Link, useNavigate } from "react-router-dom";
-//import './login.css';
+import './login.css';
 import { login } from '../../services/authentication.service';
 import CustomInput from '../../components/Forms/CustomInput';
 import { Form } from 'react-bootstrap';
@@ -49,12 +49,12 @@ const LoginPage = () => {
     return (
         <div className="container-fluid bg-dark d-flex align-items-center justify-content-center vh-100">
 
-            <div className="card mx-auto p-3 custom-card">
-                <h1 className='text-white text-center'>Chat App</h1>
+            <div className="p-sm-5 mx-auto p-4 custom-card">
+                <h1 className='text-white text-center mb-4'>Chat App</h1>
                 {error &&
-                    <span className='text-warning text-center mb-2'>
+                    <p className='text-warning text-center fw-bold small'>
                         {error?.status === 403 ? 'Access denied!' : error?.data?.message || 'Something went wrong!'}
-                    </span>
+                    </p>
                 }
                 <Form
                     onSubmit={handleLogin}
@@ -82,7 +82,7 @@ const LoginPage = () => {
                         btnText='Login'
                     />
                 </Form>
-                <Link to="/registration" className="btn btn-link" style={{ color: 'darkgray' }}>
+                <Link to="/registration" className="btn btn-link d-flex justify-content-center mt-2" style={{ color: 'darkgray' }}>
                     Create New Account!
                 </Link>
             </div>

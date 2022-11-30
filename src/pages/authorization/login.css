@@ -1,11 +1,26 @@
 .custom-card {
-    width: 350px;
-    max-width: 100%;
-    background-color: rgb(123, 65, 65)!important;
-    /*color: white;*/
+  width: 400px;
+  max-width: 100%;
+  background-color: rgb(133, 86, 86) !important;
+  box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+  border-radius: 15px 50px 30px;
 }
 
-.user-icon {
-    font-size: 100px;
-    color: rgb(237, 237, 235);
+.custom-card button {
+  background-color: rgb(199, 171, 98) !important;
+  border: none!important;
+  font-weight: bolder!important;
+}
+
+.custom-card button:active {
+  background-color: rgb(31, 31, 31) !important;
+}
+
+.custom-card button:hover {
+  background-color: rgb(199, 214, 152) !important;
+  color: rgb(16, 16, 16) !important;
+}
+
+.custom-card button:focus{
+   border: none!important;
 }

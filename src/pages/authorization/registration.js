@@ -46,12 +46,12 @@ const RegistrationPage = () => {
   return (
     <div className="container-fluid bg-dark d-flex align-items-center justify-content-center vh-100">
 
-      <div className="card mx-auto p-3 custom-card">
-        <h1 className='text-white text-center'>Chat App</h1>
+      <div className="mx-auto p-sm-5 p-4 custom-card">
+        <h1 className='text-white text-center mb-5'>Chat App</h1>
         {error &&
-          <span className='text-warning text-center mb-2'>
+          <p className='text-warning text-center fw-bold small'>
             {error?.status === 403 ? 'Access denied!' : error?.data?.message || 'Something went wrong!'}
-          </span>
+          </p>
         }
         <Form
           onSubmit={handleRegister}
@@ -90,7 +90,7 @@ const RegistrationPage = () => {
             btnText='Sign Up'
           />
         </Form>
-        <Link to="/login" className="btn btn-link" style={{ color: 'darkgray' }}>
+        <Link to="/login" className="btn btn-link d-flex justify-content-center mt-2" style={{ color: 'darkgray' }}>
           I have an Account!
         </Link>
       </div>

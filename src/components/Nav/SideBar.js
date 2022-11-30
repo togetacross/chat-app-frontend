@@ -2,15 +2,14 @@ import store from '../../store';
 import ProfileItem from '../Common/ProfileItem';
 import NewChatRoom from './../Chatroom/NewChatRoom';
 import ChatRoomsPanel from '../Chatroom/ChatRoomsPanel';
-import { Menu, MenuItem, Sidebar, SubMenu, useProSidebar } from 'react-pro-sidebar';
+import { Menu, Sidebar, SubMenu, useProSidebar } from 'react-pro-sidebar';
 import NewPrivateRoom from './../Chatroom/NewPrivateRoom';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAnglesLeft, faCircle, faPowerOff } from "@fortawesome/free-solid-svg-icons";
+import { faAnglesLeft, faCircle} from "@fortawesome/free-solid-svg-icons";
 import { Nav } from 'react-bootstrap';
 import './SideBar.css'
 import UpdateProfileImage from '../User/UpdateProfileImage';
-import { faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import SignOut from '../User/SignOut';
 
 const SideBar = () => {
