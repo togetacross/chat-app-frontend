@@ -6,9 +6,12 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import MessageActivityDetails from './MessageActivityDetails';
 import ImageViewer from './ImageViewer';
+import useHttp from '../../hooks/useHttp';
+import { download } from '../../services/chatroom.service';
 
 const Message = ({ item, isMyMessage, user, roomUsers, onSendLike, currentUserId }) => {
 
+    const { sendRequest, data, error, loading } = useHttp();
     const createdAt = new Date(item.createdAt).toLocaleString();
     const [likeActivities, setLikeActivities] = useState();
     const [hasSelfLike, setHasSelfLike] = useState();
@@ -22,15 +25,42 @@ const Message = ({ item, isMyMessage, user, roomUsers, onSendLike, currentUserId
         setSeenActivities(item.userActivitys.filter(activity => activity.seenAt !== null).length);
     }, [item])
 
+    useEffect(() => {
+        if (data) {
+            const header =  data.headers['content-disposition'];
+            const filenameRegex = /filename=\"(.*)\"/;
+            const matches = filenameRegex.exec(header);
+            const fileName = matches[1] || 'file';
+            const blobUrl = URL.createObjectURL(data.data);
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = fileName;
+            document.body.appendChild(link);
+    
+            link.dispatchEvent(
+                new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                })
+            );
+            document.body.removeChild(link);
+        }
+    }, [data])
+
     const handleShowImageViewer = (index) => {
         setCurrentIndex(index);
         setShowImageViewer(!showImageViewer);
     }
-    
+
     const handleCloseImageViewer = () => {
         setCurrentIndex();
         setShowImageViewer(!showImageViewer);
     }
+
+    const handleDownload = (name) => {
+        sendRequest(download(item.roomId, name));
+    };
 
     return (
         <div
@@ -76,29 +106,30 @@ const Message = ({ item, isMyMessage, user, roomUsers, onSendLike, currentUserId
                             onHandleClose={handleCloseImageViewer}
                             images={item.files}
                             selectedIndex={currentIndex}
+                            onHandleDownload={handleDownload}
                         />
                     }
 
                     <Card.Text>
-                        {item.files && item.files.map((item, index) => (
+                        {item.files && item.files.map((attachment, index) => (
                             /// IF DOCUMENT, VIDEO DISPLAY FLEX
 
                             <div
-                                key={item.name}
-                                className={`${item.attachmentType === 'IMAGE' ? 'd-inline-flex me-1' : 'd-flex'}`}
+                                key={attachment.name}
+                                className={`${attachment.attachmentType === 'IMAGE' ? 'd-inline-flex me-1' : 'd-flex'}`}
                             >
-                                {item.attachmentType === 'IMAGE' ?
-                                        <Image
-                                            src={`data:image/jpeg;base64,${item.file}`}
-                                            thumbnail
-                                            style={{ maxHeight: '60px' }}
-                                            onClick={() => handleShowImageViewer(index)}
-                                        />
+                                {attachment.attachmentType === 'IMAGE' ?
+                                    <Image
+                                        src={`data:image/jpeg;base64,${attachment.file}`}
+                                        thumbnail
+                                        style={{ maxHeight: '60px' }}
+                                        onClick={() => handleShowImageViewer(index)}
+                                    />
                                     :
-                                    <div className='py-2' >
+                                    <div className='py-2' onClick={() => handleDownload(attachment.name)}>
                                         <FontAwesomeIcon icon={faFile} />
                                         <span className='text-warning'>
-                                            {item.name}
+                                            {attachment.name}
                                         </span>
                                     </div>
                                 }

@@ -26,6 +26,8 @@ const UserSearch = ({ onHandleSelectUser, roomId }) => {
             } else {
                 sendRequest(getUsersByNameContain(namePart));
             }
+        } else {
+            setUsers([]);
         }
     }
 

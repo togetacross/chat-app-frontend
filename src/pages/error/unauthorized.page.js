@@ -9,7 +9,7 @@ const UnauthorizedPage = () => {
           <div className="mb-4 lead" >
             Unauthorized! Access to this resource is denied.
           </div>
-          <Link to="/home" className="btn btn-link">
+          <Link to="/" className="btn btn-link">
             Back to Home
           </Link>
         </div>

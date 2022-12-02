@@ -5,10 +5,10 @@ import RegistrationPage from './pages/authorization/registration';
 import LoginPage from './pages/authorization/login';
 import { AuthGuard } from './guards/auth.guard';
 import { Role } from './models/role';
-import './App.css';
 import Layout from './layout/Layout';
 import WebSocketProvider from './context/WebSocket';
 import { ProSidebarProvider } from 'react-pro-sidebar';
+import Admin from './pages/admin/Admin';
 
 function App() {
   return (
@@ -23,6 +23,13 @@ function App() {
             <WebSocketProvider>
               <Layout />
             </WebSocketProvider>
+          </AuthGuard>
+        }
+        />
+
+        <Route path='/admin' element={
+          <AuthGuard roles={[Role.ADMIN]}>
+              <Admin/>
           </AuthGuard>
         }
         />

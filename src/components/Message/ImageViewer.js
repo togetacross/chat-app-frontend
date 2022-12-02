@@ -3,11 +3,12 @@ import { faAngleLeft, faAngleRight, faDownload, faXmark } from "@fortawesome/fre
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Col, Modal, Row, Image } from "react-bootstrap";
 
-const ImageViewer = ({ show, onHandleClose, images, selectedIndex }) => {
+const ImageViewer = ({ show, onHandleClose, images, selectedIndex, onHandleDownload }) => {
 
     const [index, setIndex] = useState();
 
     useEffect(() => {
+        console.log(images)
         setIndex(selectedIndex);
     }, [selectedIndex]);
 
@@ -25,28 +26,9 @@ const ImageViewer = ({ show, onHandleClose, images, selectedIndex }) => {
         onHandleClose();
     }
 
-    const downloadFile = () => {
-        // fetch file by name from server...
+    const downloadFile = (fileName) => {
+        onHandleDownload(fileName);
     }
-    /*
-        const downloadImage = (item) => {
-            let blob = new Blob([item.file]);
-            const blobUrl = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = blobUrl;
-            link.download = item.name;
-            document.body.appendChild(link);
-    
-            link.dispatchEvent(
-                new MouseEvent('click', {
-                    bubbles: true,
-                    cancelable: true,
-                    view: window
-                })
-            );
-    
-            document.body.removeChild(link);
-        }*/
 
     return (
 
@@ -117,7 +99,7 @@ const ImageViewer = ({ show, onHandleClose, images, selectedIndex }) => {
                                             className="text-warning position-absolute top-50 start-50"
                                             icon={faDownload}
                                             size="xl"
-                                            onClick={() => downloadFile(images[index])}
+                                            onClick={() => downloadFile(images[index].name)}
                                         />
                                     </div>
                                 }

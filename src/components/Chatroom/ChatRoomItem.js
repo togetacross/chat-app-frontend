@@ -1,6 +1,8 @@
 import { Badge, ListGroupItem } from "react-bootstrap";
 import { useState, useEffect } from 'react';
 import ProfileItem from "../Common/ProfileItem";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircle } from '@fortawesome/free-solid-svg-icons';
 
 const ChatRoomItem = ({ room, onHandleRoomSelect }) => {
 
@@ -39,7 +41,6 @@ const ChatRoomItem = ({ room, onHandleRoomSelect }) => {
         <ListGroupItem
             action
             onClick={() => onHandleRoomSelect(room.id)}
-           // variant="light"
             style={{ borderBottomLeftRadius: "30px", borderTopLeftRadius: "30px" }}
             className="position-relative mb-1 p-2 border border-white bg-dark text-white"
         >
@@ -48,12 +49,10 @@ const ChatRoomItem = ({ room, onHandleRoomSelect }) => {
                 image={room.image}
             />
             {room.hasNewMessage &&
-                <Badge
-                    bg="danger"
-                    className="p-2 position-absolute top-0 end-0"
-                >
-                    New message
-                </Badge>
+                <FontAwesomeIcon
+                    className='text-danger position-absolute top-0 end-0'
+                    icon={faCircle}
+                />
             }
             <Badge
                 bg="secondary"

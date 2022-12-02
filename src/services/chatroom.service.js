@@ -83,8 +83,11 @@ export async function updateUserProfileImage(data) {
     return await axios.put(BASE_API_URL + "/users/profile/update", data, { headers: authHeader() });
 };
 
-/*
-export async function getPaginateUserRooms(userId, page, size) {
-    return await axios.get(BASE_API_URL + `/chatroom/sort?userId=${userId}&page=${page}&size=${size}`, { headers: authHeader() });
+export async function download(roomId, fileName) {
+    return await axios.get(BASE_API_URL + '/files/download',
+        {
+            responseType: 'blob',
+            params: { roomId: roomId, fileName: fileName },
+            headers: authHeader()
+        });
 };
-*/
